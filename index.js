@@ -13,10 +13,6 @@ const app = express();
 app.use(express.json())
 app.use(cors());
 
-
-console.log("Hello world")
-
-
 app.get("/list", async (req, res) => {
   try {
 
