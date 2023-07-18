@@ -164,21 +164,19 @@ app.patch("/edit-item", async (req, res) => {
     const listItemIdToUpdate = req.query.itemId;
     const newValue = req.body.value;
 
-    console.log(req.query.userId,newValue,listItemIdToUpdate)
 
     let data = await TodoList.findOne({ userId: req.query.userId });
 
 
     if(req.query.itemId !== undefined){
       const updatedList = data?.list.map(item => {
-        if(item._id == listItemIdToUpdate){
+        if(item?._id.toString() == listItemIdToUpdate){
           item.value = newValue
           return item
         }
         return item;
       });
   
-      console.log(updatedList,"updatedList")
       await TodoList.findOneAndUpdate(
         { userId: req.query.userId },
         { $set: { list: updatedList } }
@@ -191,7 +189,6 @@ app.patch("/edit-item", async (req, res) => {
     }
 
   } catch (error) {
-    console.log(error, "error<<");
     res.send({
       success: false,
       message: "Something went wrong",
@@ -204,15 +201,14 @@ app.patch("/edit-item", async (req, res) => {
 app.delete("/delete-item", async (req, res) => {
   try {
     const listItemIdToDelete = req.query.itemId;
-
-    console.log(listItemIdToDelete, "listItemIdToDelete", req.query.userId);
     let data = await TodoList.findOne({ userId: req.query.userId });
+
+
     if (req.query.itemId !== undefined) {
       const updatedList = data?.list.filter(item => {
-        return item._id !== listItemIdToDelete;
+        return item?._id.toString() !== listItemIdToDelete;
       });
 
-      console.log(updatedList, "updatedList",updatedList.length);
       await TodoList.findOneAndUpdate(
         { userId: req.query.userId },
         { $set: { list: updatedList } }
